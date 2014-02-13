@@ -1,0 +1,1 @@
+1. 要記的修改 php.ini 中的 date.timezone=Asia/Taipei; 時間才會對

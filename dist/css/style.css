@@ -1,0 +1,55 @@
+body{
+	background-image: url(dist/img/tiles.png);
+}
+#Main{
+	margin-top: 40px;
+}
+#QTitle{
+	margin-top: 20px;
+	height: 50px;
+	font-size: 20px;
+	padding-top: 15px;
+	text-align: center;
+}
+#QTitle input{
+	text-align: center;
+	font-size: 20px;
+}
+#QChoose{
+	position: fixed;
+	bottom: 10px;
+	left: 20px;
+}
+#QChoose input{
+	height: 60px;
+	width: 60px;
+	font-size: 20px;
+}
+#QControls{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.row{
+	height: 80px;
+	text-align: center;
+	padding-top: 13px;
+}
+.row button, .row input{
+	height: 70px;
+	width: 70px;
+	text-align: center;
+}
+
+#Info{
+	margin-top: 40px;
+	height: 512px;
+}
+#QTotal{
+	margin-top: 50px;
+}
+#QTotal span{
+	margin-right: 8px;
+}
+#OtherContorl{
+	margin-top: 40px;
+}
