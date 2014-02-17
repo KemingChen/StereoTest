@@ -15,11 +15,15 @@ $path = $_GET["Path"];
 
 $questionName = "$date-$tester-$headphone-$channel" . "channel";
 ?>
+
+
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/style.css">
+	<script type="text/javascript" href="dist/js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" href="dist/js/core.js"></script>
 </head>
 <body>
 	<div class="container" style="cursor: default;">
@@ -64,6 +68,8 @@ $questionName = "$date-$tester-$headphone-$channel" . "channel";
 					echo "</span>\r\n";
 				}
 			?>
+				<span class="label label-danger">73</span>
+				<span class="label label-success">74</span>
 			</div>
 			<div id="OtherContorl" class="col-md-10 col-md-offset-1">
 				<form class="form-horizontal" role="form">
@@ -94,10 +100,10 @@ $questionName = "$date-$tester-$headphone-$channel" . "channel";
 					<div class="form-group">
 						<div class="col-sm-offset-1 col-sm-7 radio-inline">
 							<label class="col-sm-6">
-								<input name="Channel" type="radio" checked> 8 Channel
+								<input name="Channel" type="radio" /> 8 Channel
 							</label>
 							<label class="col-sm-6">
-								<input name="Channel" type="radio"> 5 Channel
+								<input name="Channel" type="radio" /> 5 Channel
 							</label>
 						</div>
 						<div class="col-sm-2">
@@ -110,46 +116,3 @@ $questionName = "$date-$tester-$headphone-$channel" . "channel";
 	</div>
 </body>
 </html>
-
-
-
-<?
-$titles = array("#", "前方", "左前", "左邊", "左後", "後面", "右後", "右邊", "右前");
-	
-?>
-
-<?if(false):?>
-<br />
-<div class="container">
-	<div class="col-md-8 col-md-offset-2" style="height: 600px;overflow: auto;">
-		<table id="TestTable" class="table table-striped table-bordered" style="text-align: center;">
-			<thead>
-				<tr>
-					<td colspan="<?=$colCount?>"><?=$TestName?></td>
-				</tr>	
-				<tr>
-				<?
-					// Title
-					for($i = 0; $i < $colCount; $i++){
-						echo "<td>" . $titles[$i] . "</td>\n";
-					}
-				?>
-				</tr>
-			</thead>
-			<tbody>
-				<?
-					// Question
-					for($i = 1; $i <= $qTotal; $i++){
-						echo "<tr>\n";
-						echo "<td>$i</td>\n";
-						for($j = 1; $j < $colCount; $j++){
-							echo "<td><input name='Q$i' type='radio'/></td>\n";
-						}
-						echo "</tr>\n";
-					}
-				?>
-			</tbody>
-		</table>
-	</div>
-</div>
-<?endif;?>
