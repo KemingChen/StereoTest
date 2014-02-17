@@ -15,5 +15,5 @@ function show(){
 	for(var i in items){
 		output += i + ". " + items[i] + "\r\n";
 	}
-	$("textarea").val(output);
+	$("textarea").val(output); 
 }

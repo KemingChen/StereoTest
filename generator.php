@@ -1,8 +1,9 @@
 <?
+$name = $_GET["Name"];
 $path = $_GET["Path"];
 $channel = $_GET["Channel"];
 
-header('Content-disposition: attachment; filename=test.m3u');
+header('Content-disposition: attachment; filename=' . $name . '.m3u');
 header('Content-type: text/plain');
 
 $times = $channel == 8 ? 9 : 10;
