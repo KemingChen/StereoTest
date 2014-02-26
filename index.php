@@ -12,18 +12,18 @@ $date = $_GET["Date"] == "?" ?  date("Ymd") : $_GET["Date"];
 $headphone = $_GET["Headphone"];
 $channel = $_GET["Channel"];
 $path = $_GET["Path"];
-
 $questionName = "$date-$tester-$headphone-$channel" . "channel";
 ?>
 
-
-<html>
+<!doctype html>
+<html ng-app>
 <head>
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/style.css">
-	<script type="text/javascript" href="dist/js/jquery-1.9.0.min.js"></script>
-	<script type="text/javascript" href="dist/js/core.js"></script>
+	<script type="text/javascript" src="dist/js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="dist/js/angular.min.js"></script>
+	<script type="text/javascript" src="dist/js/core.js"></script>
 </head>
 <body>
 	<div class="container" style="cursor: default;">
