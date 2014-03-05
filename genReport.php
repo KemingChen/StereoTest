@@ -10,7 +10,8 @@
 	header('Content-disposition: attachment; filename=' . $filename . '.csv');
 	header('Content-type: text/plain');
 
-	$output = "題號, 標準答案, 我的答案\r\n";
+	$output = $filename . "\r\n";
+	$output .= "題號, 標準答案, 我的答案\r\n";
 	for($i = 0; $i < count($ans); $i++){
 		$output .= ($i + 1) . ",";
 		$output .= $correspondName[$stdans[$i]] . ",";
@@ -34,6 +35,11 @@
 	$output .= "前後錯," . $result["前後"] . "\r\n";
 	$output .= "其他," . $result["其他"] . "\r\n";
 	$output .= "正確率," . (count($ans) - $result["total"]) . "/" . count($ans) . "," . (count($ans) - $result["total"])/count($ans) . "\r\n";
+	echo $output;
 
-	echo iconv('utf-8', 'big5', $output);
+
+	$file = fopen("dir/" . $filename . ".csv", "w");
+	fputs($file, iconv('utf-8', 'big5', $output));
+	fclose($file);
+	//echo iconv('utf-8', 'big5', $output);
 ?>

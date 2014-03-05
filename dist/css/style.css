@@ -49,6 +49,7 @@ body{
 }
 #QTotal span{
 	margin-right: 8px;
+	width: 100px;
 }
 #OtherContorl{
 	margin-top: 40px;

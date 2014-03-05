@@ -22,7 +22,6 @@ $questionName = "$date-$tester-$headphone-$channel" . "channel";
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/style.css">
 	<script type="text/javascript" src="dist/js/jquery-1.9.0.min.js"></script>
-	<script type="text/javascript" src="dist/js/angular.min.js"></script>
 	<script type="text/javascript" src="dist/js/core.js"></script>
 </head>
 <body>
@@ -33,81 +32,76 @@ $questionName = "$date-$tester-$headphone-$channel" . "channel";
 			</div>
 			<div id="QControls" class="col-md-12 col-md-offset-0">
 				<div class="row">
-					<button id="D0" type="button" class="btn btn-info btn-lg col-md-offset-0 active">前面</button>
+					<button id="D0" type="button" class="btn btn-info btn-lg col-md-offset-0 active" onclick="makeAnswer(this)">前面</button>
 				</div>
 				<div class="row">
-					<button id="D1" type="button" class="btn btn-info btn-lg col-md-offset-0 active">左前</button>
-					<button id="D7" type="button" class="btn btn-info btn-lg col-md-offset-3 active">右前</button>
+					<button id="D1" type="button" class="btn btn-info btn-lg col-md-offset-0 active" onclick="makeAnswer(this)">左前</button>
+					<button id="D7" type="button" class="btn btn-info btn-lg col-md-offset-3 active" onclick="makeAnswer(this)">右前</button>
 				</div>
 				<div class="row">
-					<button id="D2" type="button" class="btn btn-info btn-lg col-md-offset-0 active">左邊</button>
-					<button id="D6" type="button" class="btn btn-info btn-lg col-md-offset-6 active">右邊</button>
+					<button id="D2" type="button" class="btn btn-info btn-lg col-md-offset-0 active" onclick="makeAnswer(this)">左邊</button>
+					<input id="QuestionNumber" value="1" class="col-md-offset-2" />
+					<button id="D6" type="button" class="btn btn-info btn-lg col-md-offset-2 active" onclick="makeAnswer(this)">右邊</button>
 				</div>
 				<div class="row">
-					<button id="D3" type="button" class="btn btn-info btn-lg col-md-offset-0 active">左後</button>
-					<button id="D5" type="button" class="btn btn-info btn-lg col-md-offset-3 active">右後</button>
+					<button id="D3" type="button" class="btn btn-info btn-lg col-md-offset-0 active" onclick="makeAnswer(this)">左後</button>
+					<button id="D5" type="button" class="btn btn-info btn-lg col-md-offset-3 active" onclick="makeAnswer(this)">右後</button>
 				</div>
 				<div class="row">
-					<button id="D4" type="button" class="btn btn-info btn-lg col-md-offset-0 active">後面</button>
-				</div>
-				<div id="QChoose" class="row">
-					<button id="D0" type="button" class="btn btn-warning btn-lg col-md-offset-0">＜＜</button> 
-					<input type="text" value="01" disabled /> 
-					<button id="D1" type="button" class="btn btn-warning btn-lg col-md-offset-0">＞＞</button>
+					<button id="D4" type="button" class="btn btn-info btn-lg col-md-offset-0 active" onclick="makeAnswer(this)">後面</button>
 				</div>
 			</div>
 		</div>
 		<div id="Info" class="col-md-6">
-			<div id="QTotal" class="col-md-10 col-md-offset-1">
-			<?
-				for($i = 0; $i < 72; $i++){
-					echo '<span class="label label-default">';
-					if($i < 9)
-						echo "0";
-					echo $i+1;
-					echo "</span>\r\n";
-				}
-			?>
-				<span class="label label-danger">73</span>
-				<span class="label label-success">74</span>
+			<div id="QTotal" class="col-md-10 col-md-offset-1" style="display: none;">
+				<div id="QInfo"></div>
+				<div id="QSubmit">
+					<form action="genReport.php" method="POST" style="display: none;">
+						<input name="ANS" />
+						<input name="STDANS" />
+						<input name="Filename" />
+					</form>
+					<br />
+					<button class="form-control" onclick="calculate()">做 答 完 畢 ! ! !</button>
+				</div>
 			</div>
 			<div id="OtherContorl" class="col-md-10 col-md-offset-1">
 				<form class="form-horizontal" role="form">
 				  	<div class="form-group">
-						<label for="inputEmail3" class="col-sm-2 control-label">Who</label>
+						<label for="inputWho" class="col-sm-2 control-label">Who</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="inputEmail3" placeholder="Who are you?">
+							<input type="text" class="form-control" id="inputWho" placeholder="Who are you?">
 						</div>
 				  	</div>
 				  	<div class="form-group">
-						<label for="inputEmail3" class="col-sm-2 control-label">Music</label>
+						<label for="inputMusic" class="col-sm-2 control-label">Music</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="inputEmail3" value="music" placeholder="How to name the music?">
+							<input type="text" class="form-control" id="inputMusic" value="" placeholder="How to name the music?">
 						</div>
 				  	</div>
 				  	<div class="form-group">
-						<label for="inputEmail3" class="col-sm-2 control-label">When</label>
+						<label for="inputWhen" class="col-sm-2 control-label">When</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="inputEmail3" value="<?=$date?>" placeholder="Ex: 20140214">
+							<input type="text" class="form-control" id="inputWhen" value="<?=$date?>" placeholder="Ex: 20140214">
 						</div>
 				  	</div>
 				  	<div class="form-group">
-						<label for="inputEmail3" class="col-sm-2 control-label">Path</label>
+						<label for="inputMethod" class="col-sm-2 control-label">Method</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="inputEmail3" placeholder="Where is the Folder?">
+							<input type="text" class="form-control" id="inputMethod" placeholder="Real / KOSS / STAX / ...">
 						</div>
 				  	</div>
 					<div class="form-group">
 						<div class="col-sm-offset-1 col-sm-7 radio-inline">
 							<label class="col-sm-6">
-								<input name="Channel" type="radio" /> 8 Channel
+								<input name="inputChannel" type="radio" value="8" /> 8 Channel
 							</label>
 							<label class="col-sm-6">
-								<input name="Channel" type="radio" /> 5 Channel
+								<input name="inputChannel" type="radio" value="5" /> 5 Channel
 							</label>
 						</div>
 						<div class="col-sm-2">
-							<button type="submit" class="btn btn-default">Create</button>
+							<button type="button" class="btn btn-default" onclick="create()">Create</button>
 						</div>
 					</div>
 				</form>
