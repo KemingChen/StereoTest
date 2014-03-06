@@ -33,3 +33,21 @@ function calculate(){
 	$("input[name=Filename]").val("Report");
 	$("form").submit();
 }
+
+function putArray(objs){
+	var result = [];
+	for(var i in objs){
+		result.push(objs[i]);
+	}
+	return result;
+}
+
+function autoInsert(){
+	var ans = putArray(ANS);
+	var std = putArray(STD);
+
+	$("input[name=ANS]").val(JSON.stringify(ans));
+	$("input[name=STDANS]").val(JSON.stringify(std));
+	$("input[name=Filename]").val(filename);
+	$("form").submit();
+}

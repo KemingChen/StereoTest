@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div id="Hide" style="display: none;">
-		<form action="genReport.php" method="POST">
+		<form action="genReport_R_M_L.php" method="POST">
 			<input name="ANS" />
 			<input name="STDANS" />
 			<input name="Filename" />

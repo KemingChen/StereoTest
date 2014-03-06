@@ -80,7 +80,7 @@ function calculate(){
 
 function putArray(objs){
 	var result = [];
-	for(var i in items){
+	for(var i in objs){
 		result.push(objs[i]);
 	}
 	return result;
