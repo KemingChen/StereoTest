@@ -66,13 +66,14 @@ function toNext(){
 }
 
 function makeAnswer(obj){
-	if(data.state == "none"){
-		alert("Not Ready!!!");
+	if(data.state == "none" || data.state == "wait"){
+		alert("尚未播音樂!!!");
 		return;
 	}
+	stop();
 
 	var direct = getDirectFromId($(obj).attr("id"));
-	data.items[now] = direct;
+	data.items[data.now] = direct;
 
 	var label = $("#Q" + data.now);
 	label.removeClass("label-default").addClass("label-success");
@@ -133,6 +134,7 @@ function create(){
 	if(checkValid()){
 		data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
 		data.now = 0;
+		data.state = "wait";
 		data.items = {};
 		data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind);
 	
@@ -152,6 +154,17 @@ function create(){
 
 		toNext();
 	}
+}
+
+function play(){
+	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/(" + data.now + ").wav");
+	$("#MusicPlayer")[0].play();
+	data.state = "ready";
+}
+
+function stop(){
+	$("#MusicPlayer").attr("src", "");
+	data.state = "wait";
 }
 
 function change(obj){

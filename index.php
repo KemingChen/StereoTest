@@ -28,7 +28,8 @@
 				</div>
 				<div class="row">
 					<button id="D2" type="button" class="btn btn-info btn-lg col-md-offset-0" onclick="makeAnswer(this)">左邊</button>
-					<input id="QuestionNumber" value="1" class="col-md-offset-2" />
+					<input id="QuestionNumber" value="1" class="col-md-offset-2" style="display: none;" />
+					<button type="button" class="btn btn-success btn-lg col-md-offset-2" onclick="play()">Play</button>
 					<button id="D6" type="button" class="btn btn-info btn-lg col-md-offset-2" onclick="makeAnswer(this)">右邊</button>
 				</div>
 				<div class="row">
