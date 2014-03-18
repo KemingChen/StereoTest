@@ -73,7 +73,9 @@ function makeAnswer(obj){
 	stop();
 
 	var direct = getDirectFromId($(obj).attr("id"));
-	data.items[data.now] = direct;
+	data.items[data.now].D = direct;
+	data.items[data.now].T = ((new Date()).getTime() - data.playTime) / 1000;
+	console.log(data.items[data.now]);
 
 	var label = $("#Q" + data.now);
 	label.removeClass("label-default").addClass("label-success");
@@ -146,7 +148,7 @@ function create(){
 		qInfo.html('');
 
 		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind; i++){
-			data.items[i] = undefined;
+			data.items[i] = {D: undefined, T: undefined};
 			qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
 			if(i % 6 == 0)
 				qInfo.append('<br /><br />');
@@ -158,7 +160,9 @@ function create(){
 
 function play(){
 	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/(" + data.now + ").wav");
+	console.log($("#MusicPlayer").attr("src"));
 	$("#MusicPlayer")[0].play();
+	data.playTime = (new Date()).getTime();
 	data.state = "ready";
 }
 
