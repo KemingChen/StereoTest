@@ -1,5 +1,5 @@
 body{
-	background-image: url(dist/img/tiles.png);
+	background-image: url(../../dist/img/tiles.png);
 }
 #Main{
 	margin-top: 40px;

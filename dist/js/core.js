@@ -1,60 +1,172 @@
-var D2Name = {"?": "？？", 0: "前面", 45: "左前", 90: "左邊", 135: "左後", 180: "後面", 225: "右後", 270: "右邊", 315: "右前"};
-var items = {};
-var ans = {};
-var filename;
+var data = {
+	now: undefined,
+	filename: "",
+	state: "none",
+	items: {},
+	ans: {},
+	info: {},
+}
+
+function init(){
+	var now = new Date();
+	var date = {
+		year: format(now.getFullYear()),
+		month: format(now.getMonth() + 1),
+		day: format(now.getDate()),
+	};
+
+	$("#inputWhen").val(date.year + date.month + date.day);
+
+	function format(num){
+		if(num < 10)
+			return "0" + num.toString();
+		return num.toString();
+	}
+}
+
+function getDirectFromId(id){
+	var idToDirect = {
+		"D0": 0, 
+		"D1": 45, 
+		"D2": 90, 
+		"D3": 135, 
+		"D4": 180, 
+		"D5": 225, 
+		"D6": 270, 
+		"D7": 315
+	};
+	return idToDirect[id];
+}
+
+function getNameFromDirect(direct){
+	var D2Name = {
+		"?": "？？", 
+		0: "前面", 
+		45: "左前", 
+		90: "左邊", 
+		135: "左後", 
+		180: "後面", 
+		225: "右後", 
+		270: "右邊", 
+		315: "右前"
+	};
+	return D2Name[direct];
+}
+
+function getLabelText(i, direct){
+	var out = i < 10 ? "0" : "";
+	out = out + i + "-" + getNameFromDirect(direct);
+	return out;
+}	
+
+function toNext(){
+	data.now++;
+	$("#QuestionNumber").val(data.now);
+	$("#QTitle input").val((data.now) + " - " + getNameFromDirect(data.ans[data.now]));
+}
 
 function makeAnswer(obj){
-	var idToDirect = {"D0": 0, "D1": 45, "D2": 90, "D3": 135, "D4": 180, "D5": 225, "D6": 270, "D7": 315};
-	var direct = idToDirect[$(obj).attr("id")];
-	var now = parseInt($("#QuestionNumber").val());
+	if(data.state == "none"){
+		alert("Not Ready!!!");
+		return;
+	}
 
-	items[now] = direct;
-	$("#Q"+now).removeClass("label-default").addClass("label-success");
-	$("#Q"+now).html(genQText(now, direct));
+	var direct = getDirectFromId($(obj).attr("id"));
+	data.items[now] = direct;
 
-	$("#QuestionNumber").val(now + 1);
-	$("#QTitle input").val((now + 1) + " - " + D2Name[ans[now + 1]]);
+	var label = $("#Q" + data.now);
+	label.removeClass("label-default").addClass("label-success");
+	label.html(getLabelText(data.now, direct));
+
+	toNext();
+}
+
+function checkValid(){
+	for(var i in data.info){
+		if(data.info[i] == "" || isNaN(data.info.channel)){
+			alert("資料不完整!!!");
+			return false;
+		}
+	}
+	return true;
+}
+
+function generatorRandom(channel, frequency, kind){
+	var channel = 8, frequency = 2, kind = 3;
+	var channels = {
+		5: [0, 45, 135, 225, 315],
+		8: [0, 45, 90, 135, 180, 225, 270, 315],
+	}, result = {}, temp = [];
+
+	for(var i = 0; i < kind; i++){
+		temp[i] = [];
+		for(var j = 0; j < frequency; j++){
+			temp[i] = temp[i].concat(channels[channel]);
+		}
+		temp[i] = shuffle(shuffle(shuffle(temp[i])));
+	}
+
+	for(var i = 0, count = 1; i < kind; i++){
+		for(var j = 0; j < channel * frequency; j++){
+			result[count] = temp[i][j];
+			count++;
+		}
+	}
+
+	return result;
+
+	function shuffle(o){ //v1.0
+	    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+	    return o;
+	}
 }
 
 function create(){
-	var who = $("#inputWho").val();
-	var music = $("#inputMusic").val();
-	var when = $("#inputWhen").val();
-	var method = $("#inputMethod").val();
-	var channel = parseInt($('input[name=inputChannel]:checked').val());
-	var times = channel == 8 ? 72 : 50;
-	filename = when + "-" + who + "-" + music + "-" + method + "-" + channel + "channel";
+	data.info.who = $("#inputWho").val();
+	data.info.music = $("#inputMusic").val();
+	data.info.when = $("#inputWhen").val();
+	data.info.method = $("#inputMethod").val();
+	data.info.channel = parseInt($('input[name=inputChannel]:checked').val());
+	data.info.frequency = 2;
+	data.info.kind = 2;
 
+	if(checkValid()){
+		data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
+		data.now = 0;
+		data.items = {};
+		data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind);
+	
+		$("#OtherContorl").hide();
+		$("#QTitle input").val(data.filename);
 
-	$("#OtherContorl").hide();
-	$("#QTitle input").val(filename);
+		$("#QTotal").show();
+		var qInfo = $("#QInfo");
+		qInfo.html('');
 
-	$("#QTotal").show();
-	var qInfo = $("#QInfo");
-	qInfo.html('');
-	items = {};
-	ans = generatorRandom(channel);
+		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind; i++){
+			data.items[i] = undefined;
+			qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
+			if(i % 6 == 0)
+				qInfo.append('<br /><br />');
+		}
 
-	for(var i = 1; i <= times; i++){
-		items[i] = undefined;
-		qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + genQText(i, "?") + '</span>\r\n');
-		if(i % 6 == 0)
-			qInfo.append('<br /><br />');
+		toNext();
 	}
-
-	$("#QuestionNumber").val(1);
-
-	var now = 1;
-	$("#QTitle input").val(now + " - " + D2Name[ans[now]]);
 }
 
 function change(obj){
-	var id = $(obj).attr("id");
+	data.now = parseInt($(obj).attr("id").replace("Q", "")) - 1;
 
-	var now = parseInt(id.replace("Q", ""));
-	console.log(now);
-	$("#QuestionNumber").val(now);
-	$("#QTitle input").val(now + " - " + D2Name[ans[now]]);
+	toNext();
+	console.log(data.now);
+}
+
+function putArray(objs){
+	var result = [];
+	for(var i in objs){
+		result.push(objs[i]);
+	}
+	return result;
 }
 
 function calculate(){
@@ -78,68 +190,7 @@ function calculate(){
 	$("form").submit();*/
 }
 
-function putArray(objs){
-	var result = [];
-	for(var i in objs){
-		result.push(objs[i]);
-	}
-	return result;
-}
-
-function genQText(i, direct){
-	var out = i < 10 ? "0" : "";
-	out = out + i + "-" + D2Name[direct];
-	return out;
-}	
-
-function generatorRandom(channel){
-	var times = channel == 8 ? 9 : 10;
-	var c = [], result = {};
-	c[5] = [0, 45, 135, 225, 315];
-	c[8] = [0, 45, 90, 135, 180, 225, 270, 315];
-	var temp1 = [], temp2 = [], temp3 = [];
-
-	temp1 = temp1.concat(c[channel],c[channel],c[channel]);
-	temp2 = temp2.concat(c[channel],c[channel],c[channel]);
-	temp3 = temp3.concat(c[channel],c[channel],c[channel]);
-
-	temp1 = shuffle(shuffle(shuffle(temp1)));
-	temp2 = shuffle(shuffle(shuffle(temp2)));
-	temp3 = shuffle(shuffle(shuffle(temp3)));
-
-	var i = 1;
-
-	for(var j = 0; j < 24; j++){
-		result[i] = temp1[j];
-		i++;
-	}
-	for(var j = 0; j < 24; j++){
-		result[i] = temp2[j];
-		i++;
-	}
-	for(var j = 0; j < 24; j++){
-		result[i] = temp3[j];
-		i++;
-	}
-
-	return result;
-
-	function shuffle(o){ //v1.0
-	    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-	    return o;
-	}
-}
 
 function show(){
 	console.log(filename + "\r\n" + "ANS: " + JSON.stringify(items) + "\r\n" + "STD: " + JSON.stringify(ans));
 }
-
-/*
-$(document).bind('keydown', 'esc', function (evt) {
-	if(evt.keyCode == 116 || evt.keyCode == 123)
-		return true;
-
-	var keyArray = {81:45, 87:0, 69:315, 65:90, 68:270, 90:135, 88:180, 67:225};
-	console.log(evt.keyCode + ": " + keyArray[evt.keyCode]);
-	return false;
-});*/
