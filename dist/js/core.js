@@ -73,8 +73,8 @@ function makeAnswer(obj){
 	stop();
 
 	var direct = getDirectFromId($(obj).attr("id"));
-	data.items[data.now].D = direct;
-	data.items[data.now].T = ((new Date()).getTime() - data.playTime) / 1000;
+	data.items[data.now].UA = direct;
+	data.items[data.now].UT = ((new Date()).getTime() - data.playTime) / 1000;
 	console.log(data.items[data.now]);
 
 	var label = $("#Q" + data.now);
@@ -148,7 +148,11 @@ function create(){
 		qInfo.html('');
 
 		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind; i++){
-			data.items[i] = {D: undefined, T: undefined};
+			data.items[i] = {
+				UA: -1,  //User's Answer
+				UT: -1,  //Use time
+				SA: data.ans[i],//Standard Answer
+			};
 			qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
 			if(i % 6 == 0)
 				qInfo.append('<br /><br />');
@@ -188,7 +192,7 @@ function putArray(objs){
 
 function calculate(){
 	//var isMirror = $("#mirror").get(0).checked;
-	
+	/*
 	$.ajax({
 		type: "POST",
 		url: "genReport.php",
@@ -199,15 +203,17 @@ function calculate(){
 		console.log(msg);
 		alert("Saved");
 		//location.reload();
-	});
-/*
-	$("input[name=ANS]").val(JSON.stringify(putArray(items)));
-	$("input[name=STDANS]").val(JSON.stringify(putArray(ans)));
-	$("input[name=Filename]").val(filename);
+	});*/
+	/*
+	$("input[name=Items]").val(JSON.stringify(putArray(data.items)));
+	$("input[name=Filename]").val(data.filename);
 	$("form").submit();*/
-}
 
-
-function show(){
-	console.log(filename + "\r\n" + "ANS: " + JSON.stringify(items) + "\r\n" + "STD: " + JSON.stringify(ans));
+	$.post("save.php",{
+			id: data.filename,
+			current: JSON.stringify(data.items),
+		},
+		function(response){
+			window.open(response);
+	});
 }

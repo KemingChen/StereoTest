@@ -45,7 +45,7 @@
 			<div id="QTotal" class="col-md-10 col-md-offset-1" style="display: none;">
 				<div id="QInfo"></div>
 				<div id="QSubmit">
-					<form action="genReport.php" method="POST" style="display: none;">
+					<form action="genReport_R_M_L.php" method="POST" style="display: none;">
 						<input name="ANS" />
 						<input name="STDANS" />
 						<input name="Filename" />
