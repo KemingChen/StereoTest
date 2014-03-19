@@ -7,6 +7,7 @@
     $kinds = $data->info->kind;
     array_push($kinds, "整份文件");
     $kindCount = count($kinds);
+
     $content = "var filename = '" . $filename . "';var data = " . $_POST["current"];
     //print_r($kinds);
 
@@ -65,6 +66,7 @@
             $iKind++;
         }
     }
+
     //echo "<br />";
     //print_r($result);
     for($i = 0; $i < $kindCount; $i++){
