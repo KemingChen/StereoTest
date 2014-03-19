@@ -3,7 +3,6 @@ var data = {
 	filename: "",
 	state: "none",
 	items: {},
-	ans: {},
 	info: {},
 }
 
@@ -25,17 +24,7 @@ function init(){
 }
 
 function getDirectFromId(id){
-	var idToDirect = {
-		"D0": 0, 
-		"D1": 45, 
-		"D2": 90, 
-		"D3": 135, 
-		"D4": 180, 
-		"D5": 225, 
-		"D6": 270, 
-		"D7": 315
-	};
-	return idToDirect[id];
+	return id.replace("D", "") * 45;
 }
 
 function getNameFromDirect(direct){
@@ -60,20 +49,14 @@ function getLabelText(i, direct){
 }	
 
 function toNext(){
-	var D2Id = {
-		0: 0, 
-		45: 1, 
-		90: 2, 
-		135: 3, 
-		180: 4, 
-		225: 5, 
-		270: 6, 
-		315: 7,
-	};
-
 	data.now++;
+	var times = data.info.channel * data.info.frequency;
+	var alertText = "";
+	if(data.now % (times) == 1){
+		alertText = " ~ 現在換 " + data.info.kind[(data.now - 1) / times] + "!!!";
+	}
 	$("#QuestionNumber").val(data.now);
-	$("#QTitle input").val((data.now) + " - " + getNameFromDirect(data.ans[data.now]) + "(" + D2Id[data.ans[data.now]] + ")");
+	$("#QTitle input").val((data.now) + " - " + getNameFromDirect(data.items[data.now].SA) + "(" + (data.items[data.now].SA / 45) + ")" + alertText);
 }
 
 function makeAnswer(obj){
@@ -152,7 +135,7 @@ function create(){
 		data.now = 0;
 		data.state = "wait";
 		data.items = {};
-		data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
+		var ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
 	
 		$("#OtherContorl").hide();
 		$("#QTitle input").val(data.filename);
@@ -166,7 +149,7 @@ function create(){
 				NO: i,
 				UA: -1,  //User's Answer
 				UT: -1,  //Use time
-				SA: data.ans[i],//Standard Answer
+				SA: ans[i],//Standard Answer
 			};
 			qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
 			if(i % 6 == 0)
@@ -207,24 +190,6 @@ function putArray(objs){
 }
 
 function calculate(){
-	//var isMirror = $("#mirror").get(0).checked;
-	/*
-	$.ajax({
-		type: "POST",
-		url: "genReport.php",
-		data: { ANS: JSON.stringify(putArray(items)), STDANS: JSON.stringify(putArray(ans)), "Filename": filename}
-	})
-	.done(function( msg ) {
-		//$("#QTotal").html(msg);
-		console.log(msg);
-		alert("Saved");
-		//location.reload();
-	});*/
-	/*
-	$("input[name=Items]").val(JSON.stringify(putArray(data.items)));
-	$("input[name=Filename]").val(data.filename);
-	$("form").submit();*/
-
 	$.post("save.php",{
 			id: data.filename,
 			current: JSON.stringify(data),
