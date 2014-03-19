@@ -1,7 +1,8 @@
 <?
+/*
 	$who = "Keming";
 	$music = "Test";
-	$method = "Real";
+	$method = "Real";*/
 ?>
 <html>
 <head>

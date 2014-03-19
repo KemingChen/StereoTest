@@ -81,7 +81,9 @@ function makeAnswer(obj){
 	label.removeClass("label-default").addClass("label-success");
 	label.html(getLabelText(data.now, direct));
 
-	toNext();
+	if(data.now != data.info.channel * data.info.frequency * data.info.kind.length){
+		toNext();
+	}
 }
 
 function checkValid(){
@@ -94,14 +96,14 @@ function checkValid(){
 	return true;
 }
 
-function generatorRandom(channel, frequency, kind){
-	var channel = 8, frequency = 2, kind = 3;
+function generatorRandom(channel, frequency, kindCount){
+	var channel = 8, frequency = 2, kindCount = 3;
 	var channels = {
 		5: [0, 45, 135, 225, 315],
 		8: [0, 45, 90, 135, 180, 225, 270, 315],
 	}, result = {}, temp = [];
 
-	for(var i = 0; i < kind; i++){
+	for(var i = 0; i < kindCount; i++){
 		temp[i] = [];
 		for(var j = 0; j < frequency; j++){
 			temp[i] = temp[i].concat(channels[channel]);
@@ -109,7 +111,7 @@ function generatorRandom(channel, frequency, kind){
 		temp[i] = shuffle(shuffle(shuffle(temp[i])));
 	}
 
-	for(var i = 0, count = 1; i < kind; i++){
+	for(var i = 0, count = 1; i < kindCount; i++){
 		for(var j = 0; j < channel * frequency; j++){
 			result[count] = temp[i][j];
 			count++;
@@ -131,14 +133,14 @@ function create(){
 	data.info.method = $("#inputMethod").val();
 	data.info.channel = parseInt($('input[name=inputChannel]:checked').val());
 	data.info.frequency = 2;
-	data.info.kind = 2;
+	data.info.kind = ["左耳聽", "右耳聽"];
 
 	if(checkValid()){
 		data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
 		data.now = 0;
 		data.state = "wait";
 		data.items = {};
-		data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind);
+		data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
 	
 		$("#OtherContorl").hide();
 		$("#QTitle input").val(data.filename);
@@ -147,8 +149,9 @@ function create(){
 		var qInfo = $("#QInfo");
 		qInfo.html('');
 
-		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind; i++){
+		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind.length; i++){
 			data.items[i] = {
+				NO: i,
 				UA: -1,  //User's Answer
 				UT: -1,  //Use time
 				SA: data.ans[i],//Standard Answer
@@ -211,9 +214,10 @@ function calculate(){
 
 	$.post("save.php",{
 			id: data.filename,
-			current: JSON.stringify(data.items),
+			current: JSON.stringify(data),
 		},
 		function(response){
-			window.open(response);
+			document.location.href = response;
+			//console.log(response);
 	});
 }
