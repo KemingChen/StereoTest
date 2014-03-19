@@ -60,9 +60,20 @@ function getLabelText(i, direct){
 }	
 
 function toNext(){
+	var D2Id = {
+		0: 0, 
+		45: 1, 
+		90: 2, 
+		135: 3, 
+		180: 4, 
+		225: 5, 
+		270: 6, 
+		315: 7,
+	};
+
 	data.now++;
 	$("#QuestionNumber").val(data.now);
-	$("#QTitle input").val((data.now) + " - " + getNameFromDirect(data.ans[data.now]));
+	$("#QTitle input").val((data.now) + " - " + getNameFromDirect(data.ans[data.now]) + "(" + D2Id[data.ans[data.now]] + ")");
 }
 
 function makeAnswer(obj){
@@ -74,7 +85,8 @@ function makeAnswer(obj){
 
 	var direct = getDirectFromId($(obj).attr("id"));
 	data.items[data.now].UA = direct;
-	data.items[data.now].UT = ((new Date()).getTime() - data.playTime) / 1000;
+	if(data.items[data.now].UT == -1)
+		data.items[data.now].UT = ((new Date()).getTime() - data.playTime) / 1000;
 	console.log(data.items[data.now]);
 
 	var label = $("#Q" + data.now);
@@ -166,7 +178,7 @@ function create(){
 }
 
 function play(){
-	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/(" + data.now + ").wav");
+	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/" + data.info.music + "/(" + data.now + ").wav");
 	console.log($("#MusicPlayer").attr("src"));
 	$("#MusicPlayer")[0].play();
 	data.playTime = (new Date()).getTime();
@@ -179,6 +191,7 @@ function stop(){
 }
 
 function change(obj){
+	data.state = "ready";
 	data.now = parseInt($(obj).attr("id").replace("Q", "")) - 1;
 
 	toNext();

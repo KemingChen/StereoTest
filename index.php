@@ -1,8 +1,8 @@
 <?
-/*
-	$who = "Keming";
-	$music = "Test";
-	$method = "Real";*/
+/**/
+	$who = $_GET["who"];
+	$music = $_GET["music"];
+	$method = $_GET["method"];
 ?>
 <html>
 <head>
