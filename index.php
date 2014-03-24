@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/style.css">
-	<script type="text/javascript" src="dist/js/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="dist/js/lib/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="dist/js/core.js"></script>
 </head>
 <body onload="init();">

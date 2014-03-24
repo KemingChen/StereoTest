@@ -4,6 +4,7 @@ var data = {
 	state: "none",
 	items: {},
 	info: {},
+	playList: {},
 }
 
 function init(){
@@ -81,7 +82,15 @@ function makeAnswer(obj){
 	}
 }
 
-function checkValid(){
+function checkValid(response){
+	if(response == "error"){
+		alert("查無音樂路徑!!!");
+		return false;
+	}
+	if(!JSON.parse(response).hasOwnProperty(data.info.times)){
+		alert("音樂數目不足!!!");
+		return false;
+	}
 	for(var i in data.info){
 		if(data.info[i] == "" || isNaN(data.info.channel)){
 			alert("資料不完整!!!");
@@ -129,39 +138,47 @@ function create(){
 	data.info.channel = parseInt($('input[name=inputChannel]:checked').val());
 	data.info.frequency = 2;
 	data.info.kind = ["左耳聽", "右耳聽"];
+	data.info.times = data.info.channel * data.info.frequency * data.info.kind.length;
 
-	if(checkValid()){
-		data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
-		data.now = 0;
-		data.state = "wait";
-		data.items = {};
-		var ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
-	
-		$("#OtherContorl").hide();
-		$("#QTitle input").val(data.filename);
+	$.post("dirInfo.php", {
+		path: "sound/" + data.info.who + "/" + data.info.music,
+	}, onSuccess);
 
-		$("#QTotal").show();
-		var qInfo = $("#QInfo");
-		qInfo.html('');
+	function onSuccess(response){
+		if(checkValid(response)){
+			data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
+			data.now = 0;
+			data.state = "wait";
+			data.items = {};
+			var ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
+			data.playList = JSON.parse(response);
 
-		for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind.length; i++){
-			data.items[i] = {
-				NO: i,
-				UA: -1,  //User's Answer
-				UT: -1,  //Use time
-				SA: ans[i],//Standard Answer
-			};
-			qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
-			if(i % 6 == 0)
-				qInfo.append('<br /><br />');
+			$("#OtherContorl").hide();
+			$("#QTitle input").val(data.filename);
+
+			$("#QTotal").show();
+			var qInfo = $("#QInfo");
+			qInfo.html('');
+
+			for(var i = 1; i <= data.info.channel * data.info.frequency * data.info.kind.length; i++){
+				data.items[i] = {
+					NO: i,
+					UA: -1,  //User's Answer
+					UT: -1,  //Use time
+					SA: ans[i],//Standard Answer
+				};
+				qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
+				if(i % 6 == 0)
+					qInfo.append('<br /><br />');
+			}
+
+			toNext();
 		}
-
-		toNext();
 	}
 }
 
 function play(){
-	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/" + data.info.music + "/(" + data.now + ").wav");
+	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/" + data.info.music + "/" + data.playList[data.now]);
 	console.log($("#MusicPlayer").attr("src"));
 	$("#MusicPlayer")[0].play();
 	data.playTime = (new Date()).getTime();
