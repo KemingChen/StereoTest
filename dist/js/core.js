@@ -2,8 +2,10 @@ var data = {
 	now: undefined,
 	filename: "",
 	state: "none",
+	playTime: undefined,
 	items: {},
 	info: {},
+	ans: {},
 	playList: {},
 }
 
@@ -16,6 +18,27 @@ function init(){
 	};
 
 	$("#inputWhen").val(date.year + date.month + date.day);
+
+	$.post("dirInfo.php", {
+		path: "dir",
+		preg: "/.*-.*-.*-.*-.*-.*/",
+	}, onSuccess);
+
+	function onSuccess(response){
+		var paths = JSON.parse(response);
+		var source = Array();
+		for(var i in paths){
+			source.push(paths[i].substr(4));
+		}
+		console.log(source);
+
+		if(source.length > 0){
+			$("#inputLoadFilename").parents("div[class=form-group]").show();
+			$("#inputLoadFilename").typeahead({
+				source: source,
+			});
+		}
+	}
 
 	function format(num){
 		if(num < 10)
@@ -83,13 +106,15 @@ function makeAnswer(obj){
 }
 
 function checkValid(response){
-	if(response == "error"){
-		alert("查無音樂路徑!!!");
-		return false;
-	}
-	if(!JSON.parse(response).hasOwnProperty(data.info.times)){
-		alert("音樂數目不足!!!");
-		return false;
+	if(data.randomFile == ""){
+		if(response == "error"){
+			alert("查無音樂路徑!!!");
+			return false;
+		}
+		if(!JSON.parse(response).hasOwnProperty(data.info.times)){
+			alert("音樂數目不足!!!");
+			return false;
+		}
 	}
 	for(var i in data.info){
 		if(data.info[i] == "" || isNaN(data.info.channel)){
@@ -139,19 +164,34 @@ function create(){
 	data.info.frequency = 2;
 	data.info.kind = ["左耳聽", "右耳聽"];
 	data.info.times = data.info.channel * data.info.frequency * data.info.kind.length;
+	data.randomFile = $("#inputLoadFilename").val();
 
-	$.post("dirInfo.php", {
-		path: "sound/" + data.info.who + "/" + data.info.music,
-	}, onSuccess);
+	if(data.randomFile == ""){
+		$.post("dirInfo.php", {
+			path: "sound/" + data.info.who + "/" + data.info.music,
+			preg: "/.*.wav/",
+		}, onSuccessForCreate);
+	}
+	else{
+		$.get("dir/" + data.randomFile, onSuccessForCreate);
+	}
 
-	function onSuccess(response){
+	function onSuccessForCreate(response){
 		if(checkValid(response)){
 			data.filename = data.info.when + "-" + data.info.who + "-" + data.info.music + "-" + data.info.method + "-" + data.info.channel + "channel";
 			data.now = 0;
 			data.state = "wait";
 			data.items = {};
-			var ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
-			data.playList = JSON.parse(response);
+
+			if(data.randomFile == ""){
+				data.ans = generatorRandom(data.info.channel, data.info.frequency, data.info.kind.length);
+				data.playList = JSON.parse(response);
+			}
+			else{
+				var jsonObj = JSON.parse(response);
+				data.ans = jsonObj.ans;
+				data.playList = jsonObj.playList;
+			}
 
 			$("#OtherContorl").hide();
 			$("#QTitle input").val(data.filename);
@@ -165,7 +205,7 @@ function create(){
 					NO: i,
 					UA: -1,  //User's Answer
 					UT: -1,  //Use time
-					SA: ans[i],//Standard Answer
+					SA: data.ans[i],//Standard Answer
 				};
 				qInfo.append('<span id="Q' + i + '" class="label label-default Qlabel" onclick="change(this)">' + getLabelText(i, "?") + '</span>\r\n');
 				if(i % 6 == 0)
@@ -178,7 +218,7 @@ function create(){
 }
 
 function play(){
-	$("#MusicPlayer").attr("src", "sound/" + data.info.who + "/" + data.info.music + "/" + data.playList[data.now]);
+	$("#MusicPlayer").attr("src", data.playList[data.now]);
 	console.log($("#MusicPlayer").attr("src"));
 	$("#MusicPlayer")[0].play();
 	data.playTime = (new Date()).getTime();

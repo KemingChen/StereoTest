@@ -1,14 +1,14 @@
 <?
     $timestamp =  microtime(true) * 1000;
     $data = json_decode($_POST["current"]);
-    $filename = "dir/" . $_POST["id"] . "-" . $timestamp;
+    $filename = $_POST["id"] . "-" . $timestamp;
     $channel = $data->info->channel;
     $frequency = $data->info->frequency;
     $kinds = $data->info->kind;
     array_push($kinds, "整份文件");
     $kindCount = count($kinds);
 
-    $content = "var filename = '" . $filename . "';var data = " . $_POST["current"];
+    $content = $_POST["current"];
     //print_r($kinds);
 
     // Info
@@ -83,7 +83,7 @@
         $output .= "正確率," . ($total - $totalError) . "／" . $total . "," . ($total - $totalError) / $total * 100 . "％\r\n";
     }
     //file_put_contents($filename . ".csv", $output);
-    file_put_contents($filename . ".csv", iconv('utf-8', 'big5', $output));
-    file_put_contents($filename, $content);
-    echo $filename . ".csv";
+    file_put_contents("csv/" . $filename . ".csv", iconv('utf-8', 'big5', $output));
+    file_put_contents("dir/" . $filename, $content);
+    echo "csv/" . $filename . ".csv";
 ?>

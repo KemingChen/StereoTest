@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="dist/css/style.css">
 	<script type="text/javascript" src="dist/js/lib/jquery-1.9.0.min.js"></script>
+	<script type="text/javascript" src="dist/js/lib/typeahead.js"></script>
 	<script type="text/javascript" src="dist/js/core.js"></script>
 </head>
 <body onload="init();">
@@ -79,6 +80,12 @@
 						<label for="inputMethod" class="col-sm-2 control-label">Method</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="inputMethod" value="<?=$method?>" placeholder="Real / KOSS / STAX / ..." />
+						</div>
+				  	</div>
+					<div class="form-group" style="display: none;">
+						<label for="inputLoadFilename" class="col-sm-2 control-label">File</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="inputLoadFilename" data-provide="typeahead" />
 						</div>
 				  	</div>
 					<div class="form-group">

@@ -1,11 +1,15 @@
 <?
 	//$_POST["path"] = "sound/Keming/Drum";
-	if(!is_dir($_POST["path"])){
+
+	$path = $_POST["path"];
+	$preg = isset($_POST["preg"]) ? $_POST["preg"] : "/.*/"; // "/.*.wav/"
+	
+	if(!is_dir($path)){
 		echo "error";
 		exit;
 	}
 
-	$dir = dir($_POST["path"]);
+	$dir = dir($path);
 	$temp = array();
 	while(false !== ($entry = $dir->read())){
 	   array_push($temp, $entry);
@@ -18,9 +22,9 @@
 
 	$output = array();
 	$i = 1;
-	foreach(preg_grep("/.*.wav/", $temp) as $obj){
+	foreach(preg_grep($preg, $temp) as $obj){
 		//print($i . "-" . $obj . "<br />");
-		$output[$i] = $obj;
+		$output[$i] = $path . "/" . $obj;
 		$i++;
 	}
 
