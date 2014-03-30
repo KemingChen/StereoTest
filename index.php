@@ -1,5 +1,4 @@
 <?
-/**/
 	$who = $_GET["who"];
 	$music = $_GET["music"];
 	$method = $_GET["method"];
