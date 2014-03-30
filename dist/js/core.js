@@ -162,7 +162,7 @@ function create(){
 	data.info.method = $("#inputMethod").val();
 	data.info.channel = parseInt($('input[name=inputChannel]:checked').val());
 	data.info.frequency = 2;
-	data.info.kind = ["左耳聽", "右耳聽"];
+	data.info.kind = ["左耳聽"];
 	data.info.times = data.info.channel * data.info.frequency * data.info.kind.length;
 	data.randomFile = $("#inputLoadFilename").val();
 
