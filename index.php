@@ -2,6 +2,8 @@
 	$who = $_GET["who"];
 	$music = $_GET["music"];
 	$method = $_GET["method"];
+	$kind = $_GET["kind"] ? $_GET["kind"] : "左耳聽,右耳聽";
+	$frequency = $_GET["frequency"] ? $_GET["frequency"] : 2;
 ?>
 <html>
 <head>
@@ -85,6 +87,18 @@
 						<label for="inputLoadFilename" class="col-sm-2 control-label">File</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="inputLoadFilename" data-provide="typeahead" />
+						</div>
+				  	</div>
+				  	<div class="form-group">
+						<label for="inputKind" class="col-sm-2 control-label">Kind</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="inputKind" value="<?=$kind?>" data-provide="typeahead" />
+						</div>
+				  	</div>
+				  	<div class="form-group">
+						<label for="inputFrequency" class="col-sm-2 control-label">Frequency</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="inputFrequency" value="<?=$frequency?>" data-provide="typeahead" />
 						</div>
 				  	</div>
 					<div class="form-group">

@@ -22,6 +22,7 @@ function init(){
 	$.post("dirInfo.php", {
 		path: "dir",
 		preg: "/.*-.*-.*-.*-.*-.*/",
+		random: false,
 	}, onSuccess);
 
 	function onSuccess(response){
@@ -106,6 +107,7 @@ function makeAnswer(obj){
 }
 
 function checkValid(response){
+	return true;
 	if(data.randomFile == ""){
 		if(response == "error"){
 			alert("查無音樂路徑!!!");
@@ -161,15 +163,20 @@ function create(){
 	data.info.when = $("#inputWhen").val();
 	data.info.method = $("#inputMethod").val();
 	data.info.channel = parseInt($('input[name=inputChannel]:checked').val());
-	data.info.frequency = 2;
-	data.info.kind = ["左耳聽"];
+	data.info.frequency = parseInt($("#inputFrequency").val());;
+	data.info.kind = $("#inputKind").val().split(",");
 	data.info.times = data.info.channel * data.info.frequency * data.info.kind.length;
+	data.info.mix = false;
 	data.randomFile = $("#inputLoadFilename").val();
+	data.startTime = undefined;
 
 	if(data.randomFile == ""){
 		$.post("dirInfo.php", {
-			path: "sound/" + data.info.who + "/" + data.info.music,
+			//path: "sound/" + data.info.who + "/" + data.info.music,
+			path: "sound/" + data.info.music,
 			preg: "/.*.wav/",
+			info: JSON.stringify(data.info),
+			random: true,
 		}, onSuccessForCreate);
 	}
 	else{
@@ -218,6 +225,9 @@ function create(){
 }
 
 function play(){
+	if(data.startTime === undefined){
+		data.startTime = (new Date()).toGMTString();
+	}
 	$("#MusicPlayer").attr("src", data.playList[data.now]);
 	console.log($("#MusicPlayer").attr("src"));
 	$("#MusicPlayer")[0].play();
@@ -247,6 +257,7 @@ function putArray(objs){
 }
 
 function calculate(){
+	data.endTime = (new Date()).toGMTString();
 	$.post("save.php",{
 			id: data.filename,
 			current: JSON.stringify(data),
