@@ -22,7 +22,7 @@ function init(){
 	$.post("dirInfo.php", {
 		path: "dir",
 		preg: "/.*-.*-.*-.*-.*-.*/",
-		random: false,
+		random: 0,
 	}, onSuccess);
 
 	function onSuccess(response){
